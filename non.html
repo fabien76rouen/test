@@ -1,0 +1,66 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dommage !</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #222;
+      color: white;
+      text-align: center;
+      padding: 2em;
+    }
+    input, button {
+      padding: 0.5em;
+      font-size: 1em;
+      margin-top: 1em;
+      border-radius: 6px;
+      border: none;
+    }
+    button {
+      background-color: #dc3545;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>😢 Dommage !</h1>
+  <p>Avant de partir, dites-nous qui vous êtes :</p>
+
+  <form id="form" action="https://formspree.io/f/xdkgjwnk" method="POST" onsubmit="return valider(event)">
+    <input type="text" name="prenom" id="prenom" placeholder="Votre prénom" required />
+    <input type="hidden" name="reponse" value="non" />
+    <br />
+    <button type="submit">Je ne peux pas venir</button>
+  </form>
+
+  <script>
+    function valider(event) {
+      event.preventDefault();
+      const prenom = document.getElementById('prenom').value.trim();
+      if (!prenom) {
+        alert("Merci d’entrer votre prénom !");
+        return false;
+      }
+      document.getElementById('form').style.display = 'none';
+      document.body.insertAdjacentHTML('beforeend', '<h2>Dommage ' + prenom + ' ! Une prochaine fois 🎇</h2>');
+
+      fetch(event.target.action, {
+        method: 'POST',
+        body: new FormData(event.target),
+        headers: {
+          'Accept': 'application/json'
+        }
+      }).then(response => {
+        if (!response.ok) throw new Error("Erreur d'envoi");
+      }).catch(() => alert("Une erreur est survenue, merci de réessayer."));
+
+      return false;
+    }
+  </script>
+</body>
+</html>
